@@ -34,9 +34,55 @@ class cat(model):
         self.type = type
         self.is_trained = False
 
-    def train(self,X_train, y_train):
-        self.model.fit(X_train, y_train)
+        self.timestamp = None
+
+    def load(self, model_path:str, args_path:str = None) -> None:
+        model_name = Path(model_path).name
+
+        if model_name.endswith('_cls.cbm') or model_name.endswith('cls.cbm'):
+            self.type = 'classifier'
+        elif model_name.endswith('_reg.cbm') or model_name.endswith('reg.cbm'):
+            self.type = 'regressor'
+
+
+        if self.type == 'classifier':
+            self.model = CatBoostClassifier()
+        else:
+            self.model = CatBoostRegressor()
+        self.model.load_model(model_path)
+
+
+        if args_path is not None:
+            cfg = OmegaConf.load(args_path)
+            self.args = OmegaConf.to_container(cfg, resolve=True)
+
+        try:
+            self.timestamp = model_name.split('catboost_model_')[1].split('_')[0]
+        except Exception:
+            self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # 타임스탬프 파싱 실패하면 현재 시간으로 때려박음
+
         self.is_trained = True
+
+    def train(self,X_train, y_train, save_dir:str = None ) -> None:
+        self.model.fit(X_train, y_train)
+
+        self.is_trained = True
+        
+        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        if save_dir is not None:
+            save_dir = Path(save_dir)
+            save_dir.mkdir(parents=True, exist_ok=True)
+            
+            if self.type == 'classifier':
+                model_path = save_dir / f"catboost_model_{self.timestamp}_cls.cbm"
+            else:
+                model_path = save_dir / f"catboost_model_{self.timestamp}_reg.cbm"
+            self.model.save_model(model_path)
+
+            args = self.args
+            args_path = save_dir / f"catboost_args_{self.timestamp}.yaml"
+            OmegaConf.save(OmegaConf.create(self.args), args_path)
 
     def predict(self, input_data: pd.DataFrame, save_dir = None) -> pd.DataFrame:
         '''
@@ -47,7 +93,13 @@ class cat(model):
         if not self.is_trained:
             raise Exception("학습도 안하고 모델을 쓰려고 하다니... 기열!")
         
-        preds = self.model.predict(input_data.drop(columns=['ID']), prediction_type="Class")
+
+        if self.type == 'classifier':
+            preds = self.model.predict(input_data.drop(columns=['ID']), prediction_type="Class")
+        else:
+            preds = self.model.predict(input_data.drop(columns=['ID']))
+        
+
         output = pd.DataFrame({
             'ID': input_data['ID'],
             'completed': preds
@@ -55,15 +107,9 @@ class cat(model):
         if save_dir is not None:
             save_dir = Path(save_dir)
             save_dir.mkdir(parents=True, exist_ok=True)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_path = save_dir / f"catboost_predictions_{timestamp}.csv"
+            output_path = save_dir / f"catboost_predictions_{self.timestamp}.csv"
             output.to_csv(output_path, index=False)
 
-            args = self.args
-            args_path = save_dir / f"catboost_args_{timestamp}.yaml"
-            with open(args_path, 'w') as f:
-                for key, value in args.items():
-                    f.write(f"{key}: {value}\n")
         return output
 
     
