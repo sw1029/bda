@@ -1,14 +1,21 @@
 from datetime import datetime
 from pathlib import Path
+import random
 
 import pandas as pd
 from omegaconf import OmegaConf
+import numpy as np
+
+try:
+    import torch
+except Exception:
+    torch = None
 
 class model:
     def __init__(self):
         self.timestamp = None
         self.args = None
-    def train(self, data:pd.DataFrame) -> None:
+    def train(self, data:pd.DataFrame, **kwargs) -> None:
         pass
     def predict(self, input_data:pd.DataFrame) -> pd.DataFrame:
         # 귀찮은데 inference 기능은 여기 통합하는걸로
@@ -27,3 +34,14 @@ class model:
         cfg = OmegaConf.load(args_path)
         self.args = OmegaConf.to_container(cfg, resolve=True)
         return self.args
+
+    def set_seed(self, seed: int) -> None:
+        if seed is None:
+            return
+        random.seed(seed)
+        np.random.seed(seed)
+        if torch is not None:
+            torch.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False

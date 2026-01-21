@@ -1,6 +1,6 @@
-type: classifier
-
-params:
+model:
+  name: catboost
+  type: classifier
   iterations: 500
   depth: 6
   learning_rate: 0.05

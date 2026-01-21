@@ -1,10 +1,17 @@
 import hydra
 from omegaconf import DictConfig
-from model import cat # 호출 예시. 추후 factory 패턴으로 model 모듈 개선 예정
+from model import factory # 바이브 코딩이 좋더라
+from data import *
 
-@hydra.main(version_base=None, config_path="config", config_name="catboost") # hydra 데코레이터를 통해 실험 설정 관리
+@hydra.main(version_base=None, config_path="config", config_name="config") # hydra 데코레이터를 통해 실험 설정 관리
 def main(cfg: DictConfig):
-    model = cat(type=cfg.type, **cfg.params)
+    
+    model = factory.get_model(
+        model_cfg=cfg.model,
+        registry_cfg=cfg.registry,
+        unknown_key_policy=cfg.get("unknown_key_policy", "error"),
+    )
+    model.train(data, seed = cfg.seed) # 데이터 안넣어주면 에러남. 데이터 지정해줄것.
 
 if __name__ == "__main__":
     main()

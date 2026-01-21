@@ -1,0 +1,8 @@
+defaults:
+  - model: catboost        # config/model/catboost.yaml 로드
+  - registry         # config/model_registry.yaml 로드
+  - _self_
+
+device : cpu
+
+seed : 42

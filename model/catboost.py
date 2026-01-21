@@ -24,6 +24,11 @@ class cat(model):
     ):
         super().__init__()
         
+        kwargs.pop("type", None)
+        seed = kwargs.get("seed")
+        if seed is not None:
+            kwargs.setdefault("random_seed", seed)
+
         if type == 'classifier':
             self.model = CatBoostClassifier(**kwargs)
         elif type == 'regressor':
@@ -34,6 +39,11 @@ class cat(model):
         self.args = kwargs # 모델 파라미터 저장
         self.type = type
         self.is_trained = False
+
+
+
+
+
 
     def load(self, model_path:str, args_path:str = None) -> None:
         model_name = Path(model_path).name
@@ -58,7 +68,15 @@ class cat(model):
 
         self.is_trained = True
 
-    def train(self,X_train, y_train, save_dir:str = None ) -> None:
+
+
+
+
+
+    def train(self,X_train, y_train, save_dir:str = None, seed: int = None ) -> None:
+        self.set_seed(seed)
+        if seed is not None:
+            self.model.set_params(random_seed=seed)
         self.model.fit(X_train, y_train)
 
         self.is_trained = True
@@ -77,6 +95,11 @@ class cat(model):
 
             args_path = save_dir / f"catboost_args_{self.timestamp}.yaml"
             self.save_args(self.args, args_path)
+
+
+
+
+
 
     def predict(self, input_data: pd.DataFrame, save_dir = None) -> pd.DataFrame:
         '''

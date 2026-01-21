@@ -1,0 +1,12 @@
+registry:
+  catboost:
+    factory: "model.catboost:cat"
+    allow: ["type", "params"] # 화이트리스트
+    params_policy: "merge_dict"
+
+  mlp:
+    factory: "model.mlp:mlp"
+    allow: ["input_dim", "hidden_dim", "output_dim", "dropout", "params"] # 화이트리스트
+    params_policy: "merge_dict"
+
+unknown_key_policy: "error"   # 모르는 키 나왔을 때의 대처. drop도 가능.
