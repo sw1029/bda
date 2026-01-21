@@ -1,9 +1,10 @@
 from catboost import CatBoostClassifier, CatBoostRegressor
 from base import model
 import pandas as pd
-from datetime import datetime
 from pathlib import Path
-from omegaconf import OmegaConf
+from datetime import datetime
+
+from utils import parse_timestamp
 
 '''
 class model:
@@ -34,8 +35,6 @@ class cat(model):
         self.type = type
         self.is_trained = False
 
-        self.timestamp = None
-
     def load(self, model_path:str, args_path:str = None) -> None:
         model_name = Path(model_path).name
 
@@ -53,13 +52,9 @@ class cat(model):
 
 
         if args_path is not None:
-            cfg = OmegaConf.load(args_path)
-            self.args = OmegaConf.to_container(cfg, resolve=True)
+            self.load_args(args_path)
 
-        try:
-            self.timestamp = model_name.split('catboost_model_')[1].split('_')[0]
-        except Exception:
-            self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # 타임스탬프 파싱 실패하면 현재 시간으로 때려박음
+        self.timestamp = parse_timestamp(model_name, "catboost_model_")
 
         self.is_trained = True
 
@@ -80,9 +75,8 @@ class cat(model):
                 model_path = save_dir / f"catboost_model_{self.timestamp}_reg.cbm"
             self.model.save_model(model_path)
 
-            args = self.args
             args_path = save_dir / f"catboost_args_{self.timestamp}.yaml"
-            OmegaConf.save(OmegaConf.create(self.args), args_path)
+            self.save_args(self.args, args_path)
 
     def predict(self, input_data: pd.DataFrame, save_dir = None) -> pd.DataFrame:
         '''
@@ -111,5 +105,3 @@ class cat(model):
             output.to_csv(output_path, index=False)
 
         return output
-
-    
