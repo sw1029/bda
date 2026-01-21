@@ -1,0 +1,5 @@
+hydra-core # 실험 설정 관리용
+pandas
+numpy
+catboost
+scikit-learn
