@@ -19,29 +19,9 @@ class cat(model):
     def __init__(
         self,
         type: str = "classifier",
-        config_path: str = "config",
-        config_name: str = "catboost.yaml",
         **kwargs
     ):
         super().__init__()
-
-        # kwargs가 비어있으면 config/catboost.yaml 로드
-        if len(kwargs) == 0:
-            cfg = OmegaConf.load(Path(config_path) / config_name)
-
-            # cfg.type이 있으면 type을 그걸로 사용 
-            if "type" in cfg and cfg.type is not None:
-                type = str(cfg.type)
-
-            # cfg.params를 CatBoost kwargs로 사용
-            if "params" in cfg and cfg.params is not None:
-                kwargs = OmegaConf.to_container(cfg.params, resolve=True)
-            else:
-                kwargs = {}
-
-
-        super().__init__() # 상속
-        
         
         if type == 'classifier':
             self.model = CatBoostClassifier(**kwargs)
