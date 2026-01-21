@@ -6,3 +6,6 @@ defaults:
 device : cpu
 
 seed : 42
+
+id_label : ID
+target_label : completed

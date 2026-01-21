@@ -73,11 +73,40 @@ class cat(model):
 
 
 
-    def train(self,X_train, y_train, save_dir:str = None, seed: int = None ) -> None:
+    def train(self, 
+                data_train: pd.DataFrame, 
+                data_valid: pd.DataFrame = None, 
+
+                save_dir: str = None, 
+
+                id_label: str = None, 
+                target_label: str = None,
+
+                seed: int = None, 
+
+                **kwargs) -> None:
+        
         self.set_seed(seed)
         if seed is not None:
             self.model.set_params(random_seed=seed)
-        self.model.fit(X_train, y_train)
+
+        X_train = data_train.drop(columns=[id_label, target_label])
+        y_train = data_train[target_label]
+
+        if data_valid is not None:
+            X_valid = data_valid.drop(columns=[id_label, target_label])
+            y_valid = data_valid[target_label]
+            
+            self.model.fit(
+                X_train, y_train,
+                eval_set=(X_valid, y_valid),
+                **kwargs
+            )
+        else:
+            self.model.fit(
+                X_train, y_train,
+                **kwargs
+            )
 
         self.is_trained = True
         

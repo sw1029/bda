@@ -11,7 +11,7 @@ def main(cfg: DictConfig):
         registry_cfg=cfg.registry,
         unknown_key_policy=cfg.get("unknown_key_policy", "error"),
     )
-    model.train(data, seed = cfg.seed) # 데이터 안넣어주면 에러남. 데이터 지정해줄것.
+    model.train(data_train=data_train, data_valid=data_valid, id_label=cfg.id_label, target_label=cfg.target_label, seed=cfg.seed) # 데이터 안넣어주면 에러남. 데이터 지정해줄것.
 
 if __name__ == "__main__":
     main()

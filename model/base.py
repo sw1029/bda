@@ -15,7 +15,7 @@ class model:
     def __init__(self):
         self.timestamp = None
         self.args = None
-    def train(self, data:pd.DataFrame, **kwargs) -> None:
+    def train(self, data_train:pd.DataFrame, data_valid:pd.DataFrame = None, **kwargs) -> None:
         pass
     def predict(self, input_data:pd.DataFrame) -> pd.DataFrame:
         # 귀찮은데 inference 기능은 여기 통합하는걸로
