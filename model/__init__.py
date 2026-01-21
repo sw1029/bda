@@ -7,4 +7,4 @@ config는 config/config.yaml를 hydra로 불러와서 사용
 
 from .catboost import cat
 
-__all__ = ['cat']
+__all__ = ['cat', 'factory', 'mlp']
