@@ -4,3 +4,7 @@
 가능하면 pytorch lightning과 같이 model.train() 으로 학습 자체도 호출 가능하도록
 config는 config/config.yaml를 hydra로 불러와서 사용
 '''
+
+from .catboost import cat
+
+__all__ = ['cat']
