@@ -1,5 +1,5 @@
 from catboost import CatBoostClassifier, CatBoostRegressor
-from base import model
+from ..base import model
 import pandas as pd
 from pathlib import Path
 from datetime import datetime

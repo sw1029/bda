@@ -14,7 +14,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 개선예정사항
 
-1. model 모듈 팩토리 패턴 적용
+1. model 모듈 팩토리 패턴 적용 - 완료
 2. model 모듈에서 학습 시 경로 인자 제공하는 경우 자동 저장 기능 추가 - 완료
 3. 데이터 전처리, 시각화 관련 기능 추가
 4. 여러 시드값 결과 종합 앙상블 기능 추가.

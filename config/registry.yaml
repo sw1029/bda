@@ -1,11 +1,11 @@
 registry:
   catboost:
-    factory: "model.catboost:cat"
+    factory: "model.models.catboost:cat"
     allow: ["type", "params"] # 화이트리스트
     params_policy: "merge_dict"
 
   mlp:
-    factory: "model.mlp:mlp"
+    factory: "model.models.mlp:mlp"
     allow: ["input_dim", "hidden_dim", "output_dim", "dropout", "params"] # 화이트리스트
     params_policy: "merge_dict"
 

@@ -1,4 +1,4 @@
-from base import model
+from ..base import model
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
