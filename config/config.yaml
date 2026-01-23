@@ -9,3 +9,12 @@ seed : 42
 
 id_label : ID
 target_label : completed
+
+train_csv : data/raw/train.csv
+inference_csv : data/raw/test.csv
+log_dir : logs/
+
+need_valid : True
+valid_ratio : 0.2
+
+do_inference : True
