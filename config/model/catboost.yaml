@@ -1,8 +1,125 @@
 model:
-  name: catboost
-  type: classifier
-  iterations: 500
-  depth: 6
-  learning_rate: 0.05
-  loss_function: Logloss
-  verbose: false
+  name: catboost # registry 키 (CatBoost에 전달되지 않음); 범위: str
+  type: classifier # classifier|regressor; 범위: "classifier"|"regressor"
+  iterations: 500 # 부스팅 반복 횟수; 양의 정수; 범위: int > 0
+  depth: 6 # 트리 깊이; 정수(보통 1-16); 범위: int > 0
+  learning_rate: 0.05 # 학습률; 실수(0,1]; 범위: float (0, 1]
+  loss_function: Logloss # 예: Logloss, CrossEntropy, MultiClass, MultiClassOneVsAll, RMSE, MAE, Quantile; 범위: str (CatBoost 지원 손실 이름)
+  verbose: false # 로그 출력; true|false 또는 int(주기); 범위: bool|int
+  
+  # --- 추가 조정 가능한 파라미터 (CatBoostClassifier/CatBoostRegressor) ---
+  
+  # l2_leaf_reg: L2 정규화 계수; 범위: float >= 0
+  # model_size_reg: 모델 크기 규제 계수; 범위: float >= 0
+  # rsm: 특성 샘플링 비율 (Random Subspace); 범위: float (0, 1]
+  # border_count: 수치형 bin 개수; 범위: int >= 1
+  # feature_border_type: 수치형 bin 생성 방식; 범위: str
+  # per_float_feature_quantization: 특성별 quantization 설정; 범위: list[str]|str
+  # input_borders: 입력 특성 경계 직접 지정; 범위: list
+  # output_borders: 출력 특성 경계 직접 지정; 범위: list
+  # fold_permutation_block: 순열 블록 크기(ordered boosting); 범위: int >= 1
+  # od_pval: overfitting detector p-value 기준; 범위: float (0, 1)
+  # od_wait: early stopping 대기 반복 수; 범위: int >= 1
+  # od_type: overfitting detector 타입; 범위: str
+  # nan_mode: NaN 처리 방식 (Min/Max/Forbidden); 범위: {Min, Max, Forbidden}
+  # counter_calc_method: CTR 계산 방식; 범위: str
+  # leaf_estimation_iterations: leaf 값 추정 반복 횟수; 범위: int >= 1
+  # leaf_estimation_method: leaf 추정 방법 (Newton/Gradient); 범위: {Newton, Gradient}
+  # thread_count: CPU 스레드 수; 범위: int >= 1
+  # random_seed: 랜덤 시드; 범위: int
+  # use_best_model: 최적 반복 모델 사용 여부; 범위: bool
+  # best_model_min_trees: best model 최소 트리 수; 범위: int >= 1
+  # silent: 로그 비활성화 여부; 범위: bool
+  # logging_level: 로그 레벨; 범위: str
+  # metric_period: 지표 계산 주기; 범위: int >= 1
+  # ctr_leaf_count_limit: CTR leaf 개수 제한; 범위: int >= 1
+  # store_all_simple_ctr: simple CTR 전체 저장 여부; 범위: bool
+  # max_ctr_complexity: CTR 조합 복잡도 제한; 범위: int >= 1
+  # has_time: 시간 특성 존재 여부; 범위: bool
+  # allow_const_label: 타겟이 상수여도 허용; 범위: bool
+  # target_border: 타겟 binarization 경계값; 범위: float
+  # classes_count: 클래스 개수; 범위: int >= 2
+  # class_weights: 클래스 가중치; 범위: dict|list[float]
+  # auto_class_weights: 자동 클래스 가중치 (Balanced/SqrtBalanced); 범위: {Balanced, SqrtBalanced, None}
+  # class_names: 클래스 이름 목록; 범위: list[str]
+  # one_hot_max_size: 원핫 인코딩 최대 범주 수; 범위: int >= 0
+  # random_strength: 랜덤 점수 강도; 범위: float >= 0
+  # random_score_type: 랜덤 점수 타입; 범위: str
+  # name: 모델 이름; 범위: str
+  # ignored_features: 학습에서 제외할 특성 인덱스; 범위: list[int]|list[str]
+  # train_dir: 학습 로그/결과 저장 경로; 범위: str(경로)
+  # custom_loss: 커스텀 손실 함수; 범위: str|list[str]
+  # custom_metric: 커스텀 평가 지표; 범위: str|list[str]
+  # eval_metric: 평가 지표; 범위: str|list[str]
+  # bagging_temperature: Bayesian bootstrap 온도; 범위: float >= 0
+  # save_snapshot: 스냅샷 저장 여부; 범위: bool
+  # snapshot_file: 스냅샷 파일 경로; 범위: str(경로)
+  # snapshot_interval: 스냅샷 저장 주기(초); 범위: int >= 1
+  # fold_len_multiplier: fold 길이 배수; 범위: float > 0
+  # used_ram_limit: RAM 사용 제한; 범위: str|int
+  # gpu_ram_part: GPU 메모리 사용 비율; 범위: float (0, 1]
+  # pinned_memory_size: pinned 메모리 크기; 범위: int >= 0
+  # allow_writing_files: 파일 기록 허용 여부; 범위: bool
+  # final_ctr_computation_mode: 최종 CTR 계산 모드; 범위: str
+  # approx_on_full_history: 전체 히스토리로 근사 계산; 범위: bool
+  # boosting_type: 부스팅 타입 (Plain/Ordered); 범위: {Plain, Ordered}
+  # simple_ctr: 단순 CTR 설정; 범위: list|str
+  # combinations_ctr: CTR 조합 설정; 범위: list|str
+  # per_feature_ctr: 특성별 CTR 설정; 범위: list|str
+  # ctr_description: CTR 세부 설정 문자열; 범위: list|str
+  # ctr_target_border_count: CTR 타겟 경계 개수; 범위: int >= 1
+  # task_type: 학습 장치 (CPU/GPU); 범위: {CPU, GPU}
+  # device_config: 디바이스 설정; 범위: dict
+  # devices: 사용할 디바이스 ID; 범위: str|list[int]|list[str]
+  # bootstrap_type: 부트스트랩 방식 (Bayesian/Bernoulli/MVS/No); 범위: str (예: Bayesian|Bernoulli|MVS|No)
+  # subsample: 샘플링 비율; 범위: float (0, 1]
+  # mvs_reg: MVS 샘플링 규제; 범위: float >= 0
+  # sampling_unit: 샘플링 단위 (Object/Group); 범위: str (예: Object|Group)
+  # sampling_frequency: 샘플링 빈도 (PerTree/PerLevel); 범위: str (예: PerTree|PerTreeLevel)
+  # dev_score_calc_obj_block_size: 점수 계산 블록 크기(개발 옵션); 범위: int >= 0
+  # dev_efb_max_buckets: EFB 최대 버킷(개발 옵션); 범위: int >= 0
+  # sparse_features_conflict_fraction: 희소 특성 충돌 허용 비율; 범위: float [0, 1]
+  # max_depth: 최대 깊이(동의어: depth); 범위: int >= 0
+  # n_estimators: 트리 수(동의어: iterations); 범위: int >= 1
+  # num_boost_round: 부스팅 라운드 수; 범위: int >= 1
+  # num_trees: 트리 수(동의어); 범위: int >= 1
+  # colsample_bylevel: 레벨별 특성 샘플링 비율; 범위: float (0, 1]
+  # random_state: 랜덤 시드(동의어); 범위: int
+  # reg_lambda: L2 정규화(동의어); 범위: float >= 0
+  # objective: 목표 함수(동의어); 범위: str
+  # eta: 학습률(동의어); 범위: float > 0
+  # max_bin: bin 최대 개수(동의어); 범위: int >= 1
+  # scale_pos_weight: 양성 클래스 가중치; 범위: float >= 0
+  # gpu_cat_features_storage: GPU 범주형 저장 방식; 범위: str
+  # data_partition: 데이터 파티션 방식; 범위: str
+  # metadata: 메타데이터; 범위: dict
+  # early_stopping_rounds: 조기 종료 라운드; 범위: int >= 1
+  # cat_features: 범주형 특성 인덱스; 범위: list[int]|list[str]
+  # grow_policy: 트리 성장 정책 (SymmetricTree/Depthwise/Lossguide); 범위: {SymmetricTree, Depthwise, Lossguide}
+  # min_data_in_leaf: leaf 최소 샘플 수; 범위: int >= 1
+  # min_child_samples: leaf 최소 샘플 수(동의어); 범위: int >= 1
+  # max_leaves: 최대 leaf 개수; 범위: int >= 0
+  # num_leaves: leaf 개수(동의어); 범위: int >= 0
+  # score_function: 분할 점수 함수; 범위: str
+  # leaf_estimation_backtracking: leaf 추정 백트래킹 설정; 범위: str|dict
+  # ctr_history_unit: CTR 히스토리 단위; 범위: str
+  # monotone_constraints: 단조 제약; 범위: dict|list|tuple
+  # feature_weights: 특성 가중치; 범위: dict|list[float]
+  # penalties_coefficient: 페널티 계수; 범위: float >= 0
+  # first_feature_use_penalties: 최초 사용 특성 페널티; 범위: dict|list|tuple
+  # per_object_feature_penalties: 객체별 특성 페널티; 범위: dict|list|tuple
+  # model_shrink_rate: 모델 축소 비율; 범위: float >= 0
+  # model_shrink_mode: 모델 축소 모드; 범위: str
+  # langevin: Langevin 부스팅 사용; 범위: bool
+  # diffusion_temperature: Langevin 확산 온도; 범위: float >= 0
+  # posterior_sampling: posterior sampling 사용; 범위: bool
+  # boost_from_average: 평균 예측에서 시작; 범위: bool
+  # text_features: 텍스트 특성 인덱스; 범위: list[int]|list[str]
+  # tokenizers: 텍스트 토크나이저 설정; 범위: list|dict
+  # dictionaries: 텍스트 사전 설정; 범위: list|dict
+  # feature_calcers: 텍스트 feature calcer 설정; 범위: list|dict
+  # text_processing: 텍스트 처리 파이프라인; 범위: dict
+  # embedding_features: 임베딩 특성 인덱스; 범위: list[int]|list[str]
+  # callback: 커스텀 콜백; 범위: callable
+  # eval_fraction: eval 분할 비율(없을 때); 범위: float (0, 1)
+  # fixed_binary_splits: 고정된 이진 분할 사용; 범위: list|str

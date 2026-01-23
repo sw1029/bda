@@ -6,6 +6,7 @@ config는 config/config.yaml를 hydra로 불러와서 사용
 '''
 
 from .models.catboost import cat
+from .models.xgboost import xg
 from .models.mlp import mlp
 
-__all__ = ['cat', 'factory', 'mlp']
+__all__ = ['cat', 'xg', 'factory', 'mlp']

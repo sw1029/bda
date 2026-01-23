@@ -1,0 +1,44 @@
+model:
+  name: xgboost # registry 키 (XGBoost에 전달되지 않음); 범위: str
+  type: classifier # classifier|regressor; 범위: "classifier"|"regressor"
+  n_estimators: 500 # 부스팅 반복 횟수; 양의 정수; 범위: int > 0
+  max_depth: 6 # 트리 깊이; 정수(보통 1-16); 범위: int >= 0
+  learning_rate: 0.05 # 학습률; 실수(0,1]; 범위: float > 0
+  objective: "binary:logistic" # 예: binary:logistic, multi:softprob, reg:squarederror, reg:logistic; 범위: str
+  eval_metric: logloss # 예: logloss, auc, error, rmse, mae, mlogloss, merror; 범위: str|list[str]
+  verbosity: 0 # 0(무음)|1(경고)|2(정보)|3(디버그); 범위: int >= 0 (보통 0-3)
+  # --- 추가 조정 가능한 파라미터 (XGBClassifier/XGBRegressor) ---
+  # base_score: 초기 예측 점수; 범위: float
+  # booster: 부스터 종류 (gbtree/gblinear/dart); 범위: {gbtree, gblinear, dart}
+  # callbacks: 학습 콜백 목록; 범위: list[callable]
+  # colsample_bylevel: 레벨별 특성 샘플링 비율; 범위: float (0, 1]
+  # colsample_bynode: 노드별 특성 샘플링 비율; 범위: float (0, 1]
+  # colsample_bytree: 트리별 특성 샘플링 비율; 범위: float (0, 1]
+  # device: 학습 디바이스 (cpu/cuda); 범위: str (예: cpu|cuda|cuda:<id>)
+  # early_stopping_rounds: 조기 종료 라운드; 범위: int >= 1
+  # enable_categorical: 범주형 특성 활성화; 범위: bool
+  # feature_types: 특성 타입 목록; 범위: list[str]|str
+  # feature_weights: 특성 가중치; 범위: list[float]|array-like
+  # gamma: 분할 최소 손실 감소 (min_split_loss); 범위: float >= 0
+  # grow_policy: 트리 성장 정책 (depthwise/lossguide); 범위: {depthwise, lossguide}
+  # importance_type: 특성 중요도 계산 방식; 범위: {weight, gain, cover, total_gain, total_cover}
+  # interaction_constraints: 특성 상호작용 제약; 범위: list|str
+  # max_bin: 히스토그램 bin 최대 개수; 범위: int >= 1
+  # max_cat_threshold: 범주형 분할 임계값 최대; 범위: int >= 0
+  # max_cat_to_onehot: 원핫 인코딩 임계값; 범위: int >= 0
+  # max_delta_step: 가중치 업데이트 최대 스텝; 범위: float >= 0
+  # max_leaves: 최대 leaf 개수; 범위: int >= 0
+  # min_child_weight: 자식 노드 최소 가중치 합; 범위: float >= 0
+  # missing: 결측값으로 처리할 값; 범위: float (또는 NaN)
+  # monotone_constraints: 단조 제약; 범위: dict|tuple|str
+  # multi_strategy: 다중 출력 전략; 범위: str
+  # n_jobs: 스레드 수; 범위: int
+  # num_parallel_tree: 병렬 트리 수; 범위: int >= 1
+  # random_state: 랜덤 시드; 범위: int
+  # reg_alpha: L1 정규화; 범위: float >= 0
+  # reg_lambda: L2 정규화; 범위: float >= 0
+  # sampling_method: 샘플링 방식 (uniform/gradient_based); 범위: {uniform, gradient_based}
+  # scale_pos_weight: 양성 클래스 가중치; 범위: float >= 0
+  # subsample: 행 샘플링 비율; 범위: float (0, 1]
+  # tree_method: 트리 학습 방법 (auto/exact/approx/hist/gpu_hist); 범위: {auto, exact, approx, hist, gpu_hist}
+  # validate_parameters: 파라미터 검증 여부; 범위: bool
