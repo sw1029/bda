@@ -106,6 +106,7 @@ class cat(model):
         
         if save_dir is not None:
             save_dir = Path(save_dir)
+            save_dir = save_dir/ "catboost" / f"{self.timestamp}"
             save_dir.mkdir(parents=True, exist_ok=True)
             
             if self.type == 'classifier':
@@ -144,6 +145,7 @@ class cat(model):
         })
         if save_dir is not None:
             save_dir = Path(save_dir)
+            save_dir = save_dir/ "catboost" / f"{self.timestamp}"
             save_dir.mkdir(parents=True, exist_ok=True)
             output_path = save_dir / f"catboost_predictions_{self.timestamp}.csv"
             output.to_csv(output_path, index=False)
