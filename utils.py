@@ -27,8 +27,10 @@ def parse_timestamp(name: str, prefix: str) -> str:
 
 # 시드 세팅용
 @contextmanager
-def set_seed(self, seed: int):
+def set_seed(seed: int):
     if seed is None:
+        # No-op context manager when no seed is provided.
+        yield
         return
     random.seed(seed)
     np.random.seed(seed)
