@@ -15,8 +15,14 @@ def main(cfg: DictConfig) -> None:
         registry_cfg=cfg.registry,
         unknown_key_policy=cfg.get("unknown_key_policy", "error"),
     )
-
-    data = pd.read_csv(cfg.train_csv) # 여기서 데이터 전처리 함수, 결과물 호출
+    # --- 데이터 전처리 부분 ---
+    data, y, cat_features, text_features = preprocess_data(
+        cfg.train_csv,
+        is_train=True,
+        id_label=cfg.id_label,
+        target_label=cfg.target_label,
+    )
+    # --- 데이터 전처리 완료 ---
 
     with set_seed(cfg.seed): # 시드 설정/원복용
 
@@ -31,14 +37,21 @@ def main(cfg: DictConfig) -> None:
             data_train, data_valid = data, None
 
         model.train(data_train=data_train, data_valid=data_valid, 
-                    id_label=cfg.id_label, target_label=cfg.target_label) 
+                    id_label=cfg.id_label, target_label=cfg.target_label,
+                    save_dir=cfg.log_dir) 
         # 데이터 안넣어주면 에러남. 데이터 지정해줄것.
         # valid 데이터가 None이면 내부에서 알아서 처리함. 최종 inference 목적으로 쓰는걸 추천.
     
     
     if cfg.get("do_inference"):
-        pred = model.predict(input_data=pd.read_csv(cfg.inference_csv),
-                        save_dir=cfg.log_dir) # save dir 경로가 None 혹은 지정 안해주는 경우 추론 결과 저장 안됨.
+        # 추론용 데이터 전처리
+        # train.py 추론 쪽 (데이터 전처리 부분으로 간주)
+        data_test, _, _, _ = preprocess_data(
+            cfg.inference_csv, is_train=False, 
+            train_cols=data.columns, 
+            id_label=cfg.id_label
+        )
+        pred = model.predict(input_data=data_test, save_dir=cfg.log_dir)
 
 if __name__ == "__main__":
     main()
