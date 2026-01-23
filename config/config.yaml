@@ -12,7 +12,7 @@ target_label : completed
 
 train_csv : data/raw/train.csv
 inference_csv : data/raw/test.csv
-log_dir : logs/
+log_dir : log/
 
 need_valid : True
 valid_ratio : 0.2
