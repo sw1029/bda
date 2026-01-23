@@ -25,9 +25,6 @@ class cat(model):
         super().__init__()
         
         kwargs.pop("type", None)
-        seed = kwargs.get("seed")
-        if seed is not None:
-            kwargs.setdefault("random_seed", seed)
 
         if type == 'classifier':
             self.model = CatBoostClassifier(**kwargs)
@@ -82,13 +79,8 @@ class cat(model):
                 id_label: str = None, 
                 target_label: str = None,
 
-                seed: int = None, 
 
                 **kwargs) -> None:
-        
-        self.set_seed(seed)
-        if seed is not None:
-            self.model.set_params(random_seed=seed)
 
         X_train = data_train.drop(columns=[id_label, target_label])
         y_train = data_train[target_label]
