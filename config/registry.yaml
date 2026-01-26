@@ -9,6 +9,11 @@ registry:
     allow: ["type", "params"] # 화이트리스트
     params_policy: "merge_dict"
 
+  lightgbm:
+    factory: "model.models.lightgbm:lgb"
+    allow: ["type", "params"] # 화이트리스트
+    params_policy: "merge_dict"
+
   mlp:
     factory: "model.models.mlp:mlp"
     allow: ["input_dim", "hidden_dim", "output_dim", "dropout", "params"] # 화이트리스트

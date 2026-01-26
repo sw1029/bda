@@ -1,0 +1,48 @@
+model:
+  name: lightgbm # registry 키 (LightGBM에 전달되지 않음); 범위: str
+  type: classifier # classifier|regressor; 범위: "classifier"|"regressor"
+  n_estimators: 1000 # 부스팅 반복 횟수; 양의 정수; 범위: int > 0
+  learning_rate: 0.05 # 학습률; 실수(0,1]; 범위: float > 0
+  num_leaves: 31 # leaf 개수; 양의 정수; 범위: int > 1
+  max_depth: -1 # 트리 최대 깊이; -1=제한 없음; 범위: int
+  subsample: 0.8 # 행 샘플링 비율; 범위: float (0, 1]
+  colsample_bytree: 0.8 # 열 샘플링 비율; 범위: float (0, 1]
+  objective: binary # 예: binary, multiclass, regression; 범위: str
+  random_state: 42 # 랜덤 시드; 범위: int
+  n_jobs: -1 # 스레드 수; 범위: int
+
+  # --- 추가 조정 가능한 파라미터 (LGBMClassifier/LGBMRegressor) ---
+  # boosting_type: 부스터 종류 (gbdt/dart/goss/rf); 범위: {gbdt, dart, goss, rf}
+  # min_child_samples: leaf 최소 샘플 수; 범위: int >= 1
+  # min_child_weight: leaf 최소 hessian 합; 범위: float >= 0
+  # min_split_gain: 분할 최소 gain; 범위: float >= 0
+  # reg_alpha: L1 정규화; 범위: float >= 0
+  # reg_lambda: L2 정규화; 범위: float >= 0
+  # subsample_freq: subsample 적용 주기; 범위: int >= 0
+  # class_weight: 클래스 가중치; 범위: dict|{balanced}|None
+  # is_unbalance: 불균형 자동 보정; 범위: bool
+  # scale_pos_weight: 양성 클래스 가중치; 범위: float >= 0
+  # importance_type: 중요도 타입; 범위: {split, gain}
+  # verbose: 로그 출력; 범위: int
+
+  # --- Optuna 하이퍼파라미터 탐색 (선택) ---
+  # valid 데이터가 주어진 경우에만 활성화됨 (data_valid is not None)
+  optuna:
+    enabled: false
+    n_trials: 20
+    metric: logloss     # logloss|auc|accuracy|f1 (classifier), rmse|mae|r2 (regressor)
+    # direction: minimize  # 생략 시 metric 기반 자동 결정
+    sampler: tpe        # tpe|random
+    seed: 42
+    suggest: {}
+    # suggest:
+    #   num_leaves:
+    #     type: int
+    #     low: 16
+    #     high: 128
+    #   learning_rate:
+    #     type: float
+    #     low: 0.01
+    #     high: 0.3
+    #     log: true
+

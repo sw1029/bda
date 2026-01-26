@@ -125,6 +125,15 @@ class xg(model):
             args_path = save_dir / f"xgboost_args_{self.timestamp}.yaml"
             self.save_args(self.args, args_path)
 
+            if data_valid is not None:
+                self.save_valid_metrics(
+                    data_valid=data_valid,
+                    id_label=id_label,
+                    target_label=target_label,
+                    artifact_dir=save_dir,
+                    file_prefix="xgboost_valid_metrics",
+                )
+
 
 
 
