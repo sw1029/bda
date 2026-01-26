@@ -51,7 +51,11 @@ def main(cfg: DictConfig) -> None:
             train_cols=data.columns, 
             id_label=cfg.id_label
         )
-        pred = model.predict(input_data=data_test, save_dir=cfg.log_dir)
+        predict_kwargs = {}
+        threshold = cfg.get("threshold", 0.5)
+        if threshold is not None:
+            predict_kwargs["threshold"] = float(threshold)
+        pred = model.predict(input_data=data_test, save_dir=cfg.log_dir, **predict_kwargs)
 
 if __name__ == "__main__":
     main()

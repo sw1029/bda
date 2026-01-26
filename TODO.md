@@ -50,7 +50,7 @@ TODO checklist입니다^^
 
 
 
-[ ] best threshold 분석 util 구현
+[x] best threshold 분석 util 구현
 - MUST
   : 모델의 출력이 regression 기반 실수인 경우 valid data 기준 best threshold 값을 후처리로 확인하는 기능 구현
 - SHOULD

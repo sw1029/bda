@@ -3,8 +3,9 @@ from ..base import model
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
+import numpy as np
 
-from utils import parse_timestamp
+from utils import load_args, parse_timestamp, prob_positive, save_args, save_valid_metrics
 
 '''
 class model:
@@ -59,7 +60,7 @@ class xg(model):
 
 
         if args_path is not None:
-            self.load_args(args_path)
+            self.args = load_args(args_path)
 
         self.timestamp = parse_timestamp(model_name, "xgboost_model_")
 
@@ -123,10 +124,11 @@ class xg(model):
             self.model.save_model(model_path)
 
             args_path = save_dir / f"xgboost_args_{self.timestamp}.yaml"
-            self.save_args(self.args, args_path)
+            save_args(self.args, args_path)
 
             if data_valid is not None:
-                self.save_valid_metrics(
+                save_valid_metrics(
+                    trained_model=self,
                     data_valid=data_valid,
                     id_label=id_label,
                     target_label=target_label,
@@ -139,7 +141,13 @@ class xg(model):
 
 
 
-    def predict(self, input_data: pd.DataFrame, save_dir = None, save_group: str = None) -> pd.DataFrame:
+    def predict(
+        self,
+        input_data: pd.DataFrame,
+        save_dir=None,
+        save_group: str = None,
+        threshold: float | None = 0.5,
+    ) -> pd.DataFrame:
         '''
         ID : 샘플별 고유 ID. input_data의 ID column
         completed : (TARGET) 수료 여부(0, 1). predict 결과
@@ -149,10 +157,16 @@ class xg(model):
             raise Exception("학습도 안하고 모델을 쓰려고 하다니... 기열!")
         
 
-        if self.type == 'classifier':
-            preds = self.model.predict(input_data.drop(columns=['ID']))
+        X = input_data.drop(columns=["ID"])
+        if threshold is None:
+            preds = self.model.predict(X)
         else:
-            preds = self.model.predict(input_data.drop(columns=['ID']))
+            score = None
+            if hasattr(self.model, "predict_proba"):
+                score = prob_positive(self.model.predict_proba(X))
+            if score is None:
+                score = np.asarray(self.model.predict(X)).reshape(-1)
+            preds = (score >= float(threshold)).astype(int)
         
 
         output = pd.DataFrame({

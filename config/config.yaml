@@ -18,3 +18,6 @@ need_valid : True
 valid_ratio : 0.2
 
 do_inference : True
+
+# inference 결과를 0/1로 만들 threshold (null이면 모델 기본값/optuna best_threshold 사용)
+threshold : 0.5
