@@ -1,7 +1,6 @@
 """
 데이터 전처리용.
 
-`data_plan.md`의 범용 전처리 파이프라인(MLP/Boost 공용, dense numeric 출력)을 반영:
 - 고정 drop 규칙 + 결측 패턴 피처
 - numeric: median impute + is_missing
 - categorical: freq/log_freq/is_rare (+ optional top-k one-hot)
