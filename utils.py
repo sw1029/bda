@@ -251,6 +251,47 @@ def unwrap_registry_cfg(registry_cfg: dict) -> dict:
     return registry_cfg
 
 
+def save_preprocess_config_artifact(
+    *,
+    log_dir: str | Path | None,
+    model_cfg: Any,
+    trained_model: Any,
+    preprocess_config: Any,
+    filename: str = "preprocess_config.yaml",
+) -> Optional[Path]:
+    if not log_dir:
+        return None
+
+    model_name = unwrap_model_cfg(to_dict(model_cfg)).get("name") or "model"
+    model_name = str(model_name).strip() or "model"
+
+    timestamp_val = getattr(trained_model, "timestamp", None)
+    timestamp = str(timestamp_val).strip() if timestamp_val else ""
+    if not timestamp:
+        return None
+
+    save_group_val = getattr(trained_model, "_optuna_group", None)
+    save_group = str(save_group_val).strip() if save_group_val else ""
+
+    artifact_dir = Path(log_dir) / model_name
+    if save_group:
+        artifact_dir = artifact_dir / save_group
+    artifact_dir = artifact_dir / timestamp
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+
+    payload = preprocess_config
+    try:
+        from dataclasses import asdict, is_dataclass
+
+        if is_dataclass(preprocess_config):
+            payload = asdict(preprocess_config)
+    except Exception:
+        pass
+
+    save_args(to_dict(payload), artifact_dir / filename)
+    return artifact_dir / filename
+
+
 def load_factory(factory_path: str):
     if ":" not in factory_path:
         raise ValueError(f"factory 경로 오류: {factory_path}")

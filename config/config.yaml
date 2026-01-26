@@ -1,5 +1,6 @@
 defaults:
   - model: catboost        # config/model/catboost.yaml 로드
+  - preprocess: default    # config/preprocess/default.yaml 로드
   - registry         # config/model_registry.yaml 로드
   - _self_
 

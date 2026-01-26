@@ -1,0 +1,19 @@
+very_sparse_threshold: 0.95 # 결측률이 이 값 이상이면 '희소 컬럼'으로 간주 (원본값 drop 후 결측 패턴 피처 중심)
+rare_threshold: 5 # 범주형 값 count가 이 값 미만이면 rare로 간주
+
+enable_categorical_onehot: true # 저카디널리티 범주형에 한해 one-hot(top-k) 추가 생성 여부
+categorical_onehot_max_unique: 8 # one-hot을 허용할 최대 unique 개수(이보다 크면 one-hot 생성 안 함)
+categorical_onehot_top_k: 5 # one-hot 생성 시 상위 빈도 top-k 값만 이진 피처로 추가
+
+enable_multilabel_topk: true # 멀티라벨(쉼표 나열) 컬럼에서 top-k 토큰 이진화 피처 추가 여부
+multilabel_top_k: 15 # 멀티라벨 토큰 이진화 시 생성할 top-k 개수
+multilabel_min_df: 2 # 멀티라벨 토큰이 최소 몇 번 등장해야 후보로 포함할지(min document frequency)
+
+text_mode: T1 # 텍스트 처리 모드: T0=drop, T1=메타(len/token 등), T2=char TF-IDF→SVD로 dense화
+text_svd_components: 64 # T2 사용 시 TruncatedSVD 차원 수
+
+enable_clustering: true # 결측 패턴 기반 군집 피처(KMeans) 추가 여부
+cluster_k: 5 # KMeans 군집 개수(K)
+cluster_random_state: 42 # KMeans random_state
+
+drop_constant_features: true # 학습 데이터에서 상수(변동 없는) 피처 제거 여부
