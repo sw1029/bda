@@ -75,6 +75,7 @@ class cat(model):
                 data_valid: pd.DataFrame = None, 
 
                 save_dir: str = None, 
+                save_group: str = None, 
 
                 id_label: str = None, 
                 target_label: str = None,
@@ -102,11 +103,17 @@ class cat(model):
 
         self.is_trained = True
         
-        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if save_group is None:
+            self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        else:
+            self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         
         if save_dir is not None:
             save_dir = Path(save_dir)
-            save_dir = save_dir/ "catboost" / f"{self.timestamp}"
+            save_dir = save_dir / "catboost"
+            if save_group is not None:
+                save_dir = save_dir / str(save_group)
+            save_dir = save_dir / f"{self.timestamp}"
             save_dir.mkdir(parents=True, exist_ok=True)
             
             if self.type == 'classifier':
@@ -123,7 +130,7 @@ class cat(model):
 
 
 
-    def predict(self, input_data: pd.DataFrame, save_dir = None) -> pd.DataFrame:
+    def predict(self, input_data: pd.DataFrame, save_dir = None, save_group: str = None) -> pd.DataFrame:
         '''
         ID : 샘플별 고유 ID. input_data의 ID column
         completed : (TARGET) 수료 여부(0, 1). predict 결과
@@ -145,7 +152,10 @@ class cat(model):
         })
         if save_dir is not None:
             save_dir = Path(save_dir)
-            save_dir = save_dir/ "catboost" / f"{self.timestamp}"
+            save_dir = save_dir / "catboost"
+            if save_group is not None:
+                save_dir = save_dir / str(save_group)
+            save_dir = save_dir / f"{self.timestamp}"
             save_dir.mkdir(parents=True, exist_ok=True)
             output_path = save_dir / f"catboost_predictions_{self.timestamp}.csv"
             output.to_csv(output_path, index=False)

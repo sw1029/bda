@@ -123,3 +123,24 @@ model:
   # callback: 커스텀 콜백; 범위: callable
   # eval_fraction: eval 분할 비율(없을 때); 범위: float (0, 1)
   # fixed_binary_splits: 고정된 이진 분할 사용; 범위: list|str
+
+  # --- Optuna 하이퍼파라미터 탐색 (선택) ---
+  # valid 데이터가 주어진 경우에만 활성화됨 (data_valid is not None)
+  optuna:
+    enabled: false
+    n_trials: 20
+    metric: logloss     # logloss|auc|accuracy|f1 (classifier), rmse|mae|r2 (regressor)
+    # direction: minimize  # 생략 시 metric 기반 자동 결정
+    sampler: tpe        # tpe|random
+    seed: 42
+    suggest: {}
+    # suggest:
+    #   depth:
+    #     type: int
+    #     low: 3
+    #     high: 10
+    #   learning_rate:
+    #     type: float
+    #     low: 0.01
+    #     high: 0.3
+    #     log: true

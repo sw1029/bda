@@ -42,3 +42,24 @@ model:
   # subsample: 행 샘플링 비율; 범위: float (0, 1]
   # tree_method: 트리 학습 방법 (auto/exact/approx/hist/gpu_hist); 범위: {auto, exact, approx, hist, gpu_hist}
   # validate_parameters: 파라미터 검증 여부; 범위: bool
+
+  # --- Optuna 하이퍼파라미터 탐색 (선택) ---
+  # valid 데이터가 주어진 경우에만 활성화됨 (data_valid is not None)
+  optuna:
+    enabled: false
+    n_trials: 20
+    metric: logloss     # logloss|auc|accuracy|f1 (classifier), rmse|mae|r2 (regressor)
+    # direction: minimize  # 생략 시 metric 기반 자동 결정
+    sampler: tpe        # tpe|random
+    seed: 42
+    suggest: {}
+    # suggest:
+    #   max_depth:
+    #     type: int
+    #     low: 3
+    #     high: 10
+    #   learning_rate:
+    #     type: float
+    #     low: 0.01
+    #     high: 0.3
+    #     log: true
