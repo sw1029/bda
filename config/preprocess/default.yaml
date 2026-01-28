@@ -5,15 +5,200 @@ enable_categorical_onehot: true # 저카디널리티 범주형에 한해 one-hot
 categorical_onehot_max_unique: 8 # one-hot을 허용할 최대 unique 개수(이보다 크면 one-hot 생성 안 함)
 categorical_onehot_top_k: 5 # one-hot 생성 시 상위 빈도 top-k 값만 이진 피처로 추가
 
-enable_multilabel_topk: true # 멀티라벨(쉼표 나열) 컬럼에서 top-k 토큰 이진화 피처 추가 여부
+# NaN(미응답)과 NONE(응답했지만 없음)을 구분
+enable_none_features: true
+none_strings:
+  - "해당없음"
+  - "해당 없음"
+  - "없음"
+  - "없습니다"
+  - "무"
+
+# major1_1/major1_2 train↔test 스키마 정합(대분류 매핑)
+enable_major_mapping: true
+major_mapping_ruleset: v1
+major_other_label: OTHER
+major_priority:
+  - 의약학
+  - 법학
+  - 교육학
+  - 예체능
+  - "IT(컴퓨터 공학 포함)"
+  - 경영학
+  - 경제통상학
+  - 자연과학
+  - 사회과학
+  - 인문학
+  - 기타
+major_keyword_rules:
+  "IT(컴퓨터 공학 포함)":
+    - 컴퓨터
+    - 소프트웨어
+    - 정보
+    - 데이터
+    - ai
+    - 인공지능
+    - 전산
+    - 전자
+    - 통신
+    - 빅데이터
+    - 공학
+    - 산업공학
+  경영학:
+    - 경영
+    - 회계
+    - 경영정보
+    - 재무
+    - 마케팅
+  경제통상학:
+    - 경제
+    - 통상
+    - 무역
+    - 국제통상
+  자연과학:
+    - 수학
+    - 통계
+    - 물리
+    - 화학
+    - 생명
+    - 지구
+    - 환경
+  사회과학:
+    - 심리
+    - 사회
+    - 정치
+    - 행정
+    - 국제
+    - 커뮤니케이션
+    - 언론
+    - 미디어
+  인문학:
+    - 국문
+    - 영문
+    - 문헌
+    - 사학
+    - 철학
+    - 언어
+    - 역사
+  의약학:
+    - 의
+    - 약
+    - 간호
+    - 보건
+    - 치의
+    - 한의
+    - 수의
+  교육학:
+    - 교육
+    - 교직
+  법학:
+    - 법
+  예체능:
+    - 예술
+    - 체육
+    - 음악
+    - 미술
+    - 디자인
+    - 연극
+    - 영화
+  기타: []
+
+# numeric 이상치 정제
+completed_semester_valid_min: 0
+completed_semester_valid_max: 20
+completed_semester_invalid_to_nan: true
+
+# 멀티라벨 파싱/top-k
+enable_multilabel_topk: true # 멀티라벨 컬럼에서 top-k 토큰 이진화 피처 추가 여부
 multilabel_top_k: 15 # 멀티라벨 토큰 이진화 시 생성할 top-k 개수
 multilabel_min_df: 2 # 멀티라벨 토큰이 최소 몇 번 등장해야 후보로 포함할지(min document frequency)
+multilabel_parser_rules:
+  - match: "^previous_class_"
+    parser: code4_prefix
+  - match: "^(desired_job|desired_job_except_data|expected_domain)$"
+    parser: alpha_dot
+  - match: "^onedayclass_topic$"
+    parser: comma_outside_parens
+  - match: "^(certificate_acquisition|desired_certificate)$"
+    parser: certificate_normalize
 
-text_mode: T1 # 텍스트 처리 모드: T0=drop, T1=메타(len/token 등), T2=char TF-IDF→SVD로 dense화
+# (옵션) 멀티라벨 토큰 TF-IDF→SVD 임베딩
+enable_multilabel_svd: false
+multilabel_svd_cols:
+  - interested_company
+  - certificate_acquisition
+  - desired_certificate
+multilabel_svd_components: 32
+multilabel_svd_min_df: 2
+
+# 자격증 슬롯 피처
+enable_certificate_slots: true
+certificate_slots:
+  adsp:
+    - adsp
+    - 데이터분석준전문가
+  sqld:
+    - sqld
+    - SQL개발자
+    - sql 개발자
+  정보처리기사:
+    - 정보처리기사
+  빅데이터분석기사:
+    - 빅데이터분석기사
+  컴퓨터활용능력:
+    - 컴퓨터활용능력
+    - 컴활
+  토익:
+    - TOEIC
+    - 토익
+  오픽:
+    - OPIC
+    - 오픽
+  태블로:
+    - tableau
+    - 태블로
+  구글애널리틱스:
+    - googleanalytics
+    - 구글애널리틱
+    - ga
+  aws:
+    - aws
+
+# previous_class_* 코드 집계/Top-K 코드 플래그
+enable_prev_code_agg_topk: true
+prev_code_top_k: 20
+prev_code_min_df: 2
+enable_prev_text_keywords: true
+prev_text_keyword_rules:
+  python: ["파이썬", "python"]
+  sql: ["sql"]
+  pandas: ["판다스", "pandas"]
+  ml: ["머신러닝", "딥러닝", "machine", "deep"]
+  stat: ["통계", "statistics"]
+  preprocess: ["전처리"]
+
+# 텍스트 처리 모드: T0=drop, T1=메타(len/token 등), T2=char TF-IDF→SVD로 dense화
+text_mode: T2
 text_svd_components: 64 # T2 사용 시 TruncatedSVD 차원 수
 
-enable_clustering: true # 결측 패턴 기반 군집 피처(KMeans) 추가 여부
-cluster_k: 5 # KMeans 군집 개수(K)
-cluster_random_state: 42 # KMeans random_state
+# 결측 패턴 기반 군집 피처(KMeans)
+enable_clustering: true
+cluster_k: 5
+cluster_ks: [] # 예: [3, 5, 7]
+cluster_random_state: 42
+
+# (옵션/Could) Soft clustering(GMM)
+enable_clustering_gmm: True
+gmm_k: 5
+
+# (옵션/Could) transductive fit (규정 허용 시)
+enable_transductive_fit: False
+transductive_fit_csv: "data/raw/test.csv" # 예: data/raw/test.csv
+
+# (옵션/Could) 공변량 쉬프트 완화: p(test|x) feature (transductive_fit_csv 필요)
+enable_domain_adaptation_feature: false
+domain_adaptation_feature_name: p_test
+domain_adaptation_C: 1.0
+domain_adaptation_max_iter: 300
 
 drop_constant_features: true # 학습 데이터에서 상수(변동 없는) 피처 제거 여부

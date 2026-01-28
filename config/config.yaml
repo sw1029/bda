@@ -22,3 +22,9 @@ do_inference : True
 
 # inference 결과를 0/1로 만들 threshold (null이면 모델 기본값/optuna best_threshold 사용)
 threshold : 0.5
+
+# (옵션/Could) F1 특화: 군집별 threshold
+cluster_threshold:
+  enabled: True
+  cluster_col: missing_cluster_id
+  min_cluster_size: 30

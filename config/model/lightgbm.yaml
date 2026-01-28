@@ -28,21 +28,74 @@ model:
   # --- Optuna 하이퍼파라미터 탐색 (선택) ---
   # valid 데이터가 주어진 경우에만 활성화됨 (data_valid is not None)
   optuna:
-    enabled: false
-    n_trials: 20
+    enabled: True
+    n_trials: 300
     metric: logloss     # logloss|auc|accuracy|f1 (classifier), rmse|mae|r2 (regressor)
     # direction: minimize  # 생략 시 metric 기반 자동 결정
     sampler: tpe        # tpe|random
     seed: 42
-    suggest: {}
-    # suggest:
-    #   num_leaves:
-    #     type: int
-    #     low: 16
-    #     high: 128
-    #   learning_rate:
-    #     type: float
-    #     low: 0.01
-    #     high: 0.3
-    #     log: true
+    suggest:
+      # --- core ---
+      boosting_type:
+        type: categorical
+        # NOTE: goss/rf는 샘플링 파라미터와 충돌 가능(조건부 설정 필요) → 안전하게 제외
+        choices: [gbdt, dart]
+      num_leaves:
+        type: int
+        low: 16
+        high: 256
+      learning_rate:
+        type: float
+        low: 0.01
+        high: 0.3
+        log: true
+      max_depth:
+        type: categorical
+        choices: [-1, 3, 4, 5, 6, 8, 10, 12]
 
+      # --- regularization / constraints ---
+      min_child_samples:
+        type: int
+        low: 5
+        high: 200
+        log: true
+      min_child_weight:
+        type: float
+        low: 0.001
+        high: 10.0
+        log: true
+      min_split_gain:
+        type: float
+        low: 0.0
+        high: 1.0
+      reg_alpha:
+        type: float
+        low: 0.00000001
+        high: 10.0
+        log: true
+      reg_lambda:
+        type: float
+        low: 0.00000001
+        high: 10.0
+        log: true
+
+      # --- sampling ---
+      subsample:
+        type: float
+        low: 0.5
+        high: 1.0
+      subsample_freq:
+        type: int
+        low: 0
+        high: 10
+      colsample_bytree:
+        type: float
+        low: 0.5
+        high: 1.0
+
+      # --- class imbalance (binary) ---
+      scale_pos_weight:
+        type: float
+        low: 0.5
+        high: 5.0
+        log: true
